@@ -38,6 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -53178,6 +53179,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 690499255931893229, guid: e7af3de5d8a43054c864eb35ffe2a3c6, type: 3}
+      propertyPath: weaponControllers
+      value: 
+      objectReference: {fileID: 8124682752970764691}
     - target: {fileID: 773583236711838905, guid: e7af3de5d8a43054c864eb35ffe2a3c6, type: 3}
       propertyPath: m_Name
       value: Player
@@ -53222,11 +53227,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2971142408492340847, guid: e7af3de5d8a43054c864eb35ffe2a3c6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3558706533635572042, guid: e7af3de5d8a43054c864eb35ffe2a3c6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e7af3de5d8a43054c864eb35ffe2a3c6, type: 3}
+--- !u!114 &8124682752970764691 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8104009038346029469, guid: e7af3de5d8a43054c864eb35ffe2a3c6, type: 3}
+  m_PrefabInstance: {fileID: 8124682752970764690}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f73abf3a431dbc439dca68b913f65a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8152309995884618372
 GameObject:
   m_ObjectHideFlags: 0
