@@ -28,7 +28,7 @@ public class BulletController : MonoBehaviour
             {
                 //Enemy take damage
                 EnemyController enemy = enemyCollider2D.gameObject.GetComponent<EnemyController>();
-                enemy.OnReceiveDamage(1f, transform.up);
+                enemy.OnReceiveNormalDamage(1f, transform.up);
                 gameObject.SetActive(false);
             }
 

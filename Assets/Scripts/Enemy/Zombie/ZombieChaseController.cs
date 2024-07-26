@@ -5,7 +5,6 @@ using UnityEngine.AI;
 
 public class ZombieChaseController : EnemyChaseController
 {
-    [SerializeField] private float speedChase = 0f;
     public override void EnterEnemyChase()
     {
         IsEnterState = true;
@@ -45,7 +44,7 @@ public class ZombieChaseController : EnemyChaseController
                     transform.up = Vector2.Lerp(transform.up, targetDir, 20 * Time.deltaTime);
 
                     Vector2 currentPos = transform.position;
-                    currentPos += (Vector2)transform.up * speedChase * Time.deltaTime;
+                    currentPos += (Vector2)transform.up * enemyController.ChaseSpeed * Time.deltaTime;
                     transform.position = currentPos;
 
                 }

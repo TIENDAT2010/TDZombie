@@ -72,7 +72,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5000
+  m_SortingOrder: 4995
   m_Sprite: {fileID: 21300000, guid: 13825a0aa999d3c4bbafd37d97811547, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -371,7 +371,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: fa4dcca6126314e4d9d37689ed099952, type: 3}
   - {fileID: 21300000, guid: 1100128f6f2d68b43a79742b6baa3474, type: 3}
   - {fileID: 21300000, guid: b3fdc37937f377548bbb9ba36a1dbec1, type: 3}
-  speedWalk: 10
 --- !u!114 &4719005292267124789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -395,7 +394,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: fa4dcca6126314e4d9d37689ed099952, type: 3}
   - {fileID: 21300000, guid: 1100128f6f2d68b43a79742b6baa3474, type: 3}
   - {fileID: 21300000, guid: b3fdc37937f377548bbb9ba36a1dbec1, type: 3}
-  speedChase: 15
 --- !u!114 &6774785027809159627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -408,6 +406,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94568d6583918e64d8a2a1675e09aeae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyHealth: 60
+  moveSpeed: 10
+  chaseSpeed: 15
   enemyID: 5
   idleController: {fileID: 7251839895642641728}
   walkController: {fileID: 3282316031196416189}
@@ -418,4 +419,6 @@ MonoBehaviour:
   spriteRenderer: {fileID: 5487438321740562226}
   audioSource: {fileID: 4158456802502291175}
   col2D: {fileID: 8303515615669657397}
-  health: 20
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  fireColor: {r: 1, g: 0.56078434, b: 0.47058824, a: 1}
+  zombieHealth: 0

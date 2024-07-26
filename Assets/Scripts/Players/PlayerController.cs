@@ -1,68 +1,116 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.EditorTools;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Player Configs")]
     [SerializeField] Color normalColor = Color.white;
     [SerializeField] Color poisonColor = Color.green;
     [SerializeField] Color fireColor = Color.red;
+
+    [Header("Player References")]
+    [SerializeField] WeaponController[] weapons = null;
     [SerializeField] WeaponController weaponControllers = null;
     [SerializeField] FootController footControllers = null;
     [SerializeField] private LayerMask ostacleLayer = new LayerMask();
     [SerializeField] private LayerMask enemyLayer = new LayerMask();
-    [SerializeField] private float moveSpeed;
-    [SerializeField] Vector2 vector3MoveInput;
-    [SerializeField] private float playerHealth = 0f;        
     
+    public PlayerState PlayerState { get; private set; }
+    public static bool IsDefeated {  get; private set; }
 
+    private Dictionary<EnemyID, int> dictionaryKilledEnemy = new Dictionary<EnemyID, int>();
+    private Dictionary<EnemyID, int> dictionaryInitEnemy = new Dictionary<EnemyID, int>();
+    private Vector2 vector3MoveInput;
+    private Vector2 mousePosition;
+    private float currentHealth = 0;
+    private float moveSpeed = 0;
+    private float totalPlayerHealth = 0f;
     private bool isPoison = false;
     private bool isFire = false;
 
-    private Vector2 mousePos;
-
-    private void Start()
+    public void OnInit()
     {
+        PlayerState = PlayerState.PlayerStart;
+        ViewManager.Instance.SetActiveView(ViewType.IngameView);
+
+        IsDefeated = false;
+
+        LevelConfigSO levelConfig = PlayerDataController.GetLevelConfig();
+        currentHealth = levelConfig.HealthPlayer;
+        totalPlayerHealth = levelConfig.HealthPlayer;
+        moveSpeed = levelConfig.SpeedPlayer;
+        ViewManager.Instance.IngameView.UpdateHealth(currentHealth, totalPlayerHealth);
         footControllers.SetIdle();
+        for(int i = 0; i < weapons.Length; i++)
+        {
+            if(weapons[i].WeaponType == PlayerDataController.GetCurrentWeapon())
+            {
+                weaponControllers = weapons[i];
+                weaponControllers.gameObject.SetActive(true);
+                break;
+            }
+        }
+    }
+
+
+    public void AddInitEnemy(EnemyID enemyID)
+    {
+        if (dictionaryInitEnemy.ContainsKey(enemyID)) { dictionaryInitEnemy[enemyID] += 1; }
+        else { dictionaryInitEnemy.Add(enemyID, 1); }
     }
 
 
     private void Update()
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-        vector3MoveInput = new Vector2(horizontal, vertical);
-
-        RaycastHit2D raycastHit2D = Physics2D.CircleCast(transform.position, 1f, vector3MoveInput.normalized, 1.5f, (ostacleLayer|enemyLayer));
-        if(raycastHit2D.collider == null)
+        if(PlayerState == PlayerState.PlayerStart)
         {
-            Vector2 playerPos = transform.position;
-            playerPos += vector3MoveInput * moveSpeed * Time.deltaTime;
-            transform.position = playerPos;
+            float horizontal = Input.GetAxis("Horizontal");
+            float vertical = Input.GetAxis("Vertical");
+            vector3MoveInput = new Vector2(horizontal, vertical);
 
-            if (horizontal + vertical != 0 && footControllers.IsIdle == true)
+            RaycastHit2D raycastHit2D = Physics2D.CircleCast(transform.position, 1f, vector3MoveInput.normalized, 1.5f, (ostacleLayer | enemyLayer));
+            if (raycastHit2D.collider == null)
             {
-                footControllers.SetMoving();
+                Vector2 playerPos = transform.position;
+                playerPos += vector3MoveInput * moveSpeed * Time.deltaTime;
+                transform.position = playerPos;
+
+                if (horizontal + vertical != 0 && footControllers.IsIdle == true)
+                {
+                    footControllers.SetMoving();
+                }
+                else if (vertical + horizontal == 0 && footControllers.IsIdle == false)
+                {
+                    footControllers.SetIdle();
+                }
             }
-            else if (vertical + horizontal == 0 && footControllers.IsIdle == false)
+
+
+            if (Input.GetMouseButtonDown(0))
             {
-                footControllers.SetIdle();
+                weaponControllers.OnEnterAttack();
             }
-        }
+            if (Input.GetMouseButton(0))
+            {
+                weaponControllers.OnAttack();
+            }
+            if (Input.GetMouseButtonUp(0))
+            {
+                weaponControllers.OnExitAttack();
+            }
 
 
-        if (Input.GetMouseButtonUp(0) && weaponControllers.IsFinishAttack == true)
-        {
-            weaponControllers.PlayAttack();
-        }
+            mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            transform.up = (mousePosition - (Vector2)transform.position).normalized;
 
-        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        transform.up = (mousePos - (Vector2)transform.position).normalized;
-
-        if (playerHealth <= 0)
-        {
-            Debug.Log("Game Over !!!");
+            if (currentHealth <= 0)
+            {
+                IsDefeated = true;
+                PlayerState = PlayerState.PlayerDefeated;
+                ViewManager.Instance.SetActiveView(ViewType.EndgameView);
+                ViewManager.Instance.EndgameView.UpdateKilledEnemy(dictionaryInitEnemy, dictionaryKilledEnemy);
+            }
         }
     }
 
@@ -73,8 +121,9 @@ public class PlayerController : MonoBehaviour
         while(timeDamagePoison > 0)
         {
             yield return new WaitForSeconds(1f);
-            playerHealth -= damagePerSecond;
+            currentHealth -= damagePerSecond;
             timeDamagePoison = timeDamagePoison - 1f;
+            ViewManager.Instance.IngameView.UpdateHealth(currentHealth, totalPlayerHealth);
         }
         poisonEffect.transform.SetParent(null);
         poisonEffect.gameObject.SetActive(false);
@@ -89,8 +138,9 @@ public class PlayerController : MonoBehaviour
         while(timeDamageFire > 0)
         {
             yield return new WaitForSeconds(1f);
-            playerHealth -= damagePerSecond;
+            currentHealth -= damagePerSecond;
             timeDamageFire = timeDamageFire - 1f;
+            ViewManager.Instance.IngameView.UpdateHealth(currentHealth, totalPlayerHealth);
         }
         fireEffect.transform.SetParent(null);
         fireEffect.gameObject.SetActive(false);
@@ -102,15 +152,20 @@ public class PlayerController : MonoBehaviour
 
     public void OnReceiveNormalAttack(float damage, Vector2 attackDir) 
     {
-        playerHealth = playerHealth - damage;
+        weaponControllers.SetMaterial();
+        currentHealth = currentHealth - damage;
+        ViewManager.Instance.IngameView.UpdateHealth(currentHealth, totalPlayerHealth);
         EffectController redEffect = PoolManager.Instance.GetEffectController(EffectType.Player_Blood_Effect);
         redEffect.transform.position = transform.position;
         redEffect.OnInit(attackDir, true);
     }
 
+
+
     public void OnReceiveFireAttack(float fisrtDamage, float damagePerSecond, float timeDamageFire) 
     {
-        playerHealth -= fisrtDamage;
+        currentHealth -= fisrtDamage;
+        ViewManager.Instance.IngameView.UpdateHealth(currentHealth, totalPlayerHealth);
         if (isFire == false)
         {
             weaponControllers.SetColor(fireColor);
@@ -126,8 +181,9 @@ public class PlayerController : MonoBehaviour
 
     public void OnReceivePoisonAttack(float fisrtDamage, float damagePerSecond, float timeDamage) 
     {
-        playerHealth -= fisrtDamage;
-        if(isPoison == false)
+        currentHealth -= fisrtDamage;
+        ViewManager.Instance.IngameView.UpdateHealth(currentHealth, totalPlayerHealth);
+        if (isPoison == false)
         {
             weaponControllers.SetColor(poisonColor);
             isPoison = true;
@@ -136,6 +192,36 @@ public class PlayerController : MonoBehaviour
             poisonEffect.transform.localPosition = new Vector2(-0.35f, -0.45f);
             poisonEffect.OnInit(transform.up, false);
             StartCoroutine(HandlePoisonEffect(damagePerSecond, poisonEffect, timeDamage));
+        }
+    }
+
+
+    public void UpdateDeadEnemy(EnemyID enemyID)
+    {
+        if (dictionaryKilledEnemy.ContainsKey(enemyID)) { dictionaryKilledEnemy[enemyID] += 1; }
+        else { dictionaryKilledEnemy.Add(enemyID, 1); }
+
+        int totalInit = 0;
+        int totalDeath = 0;
+        foreach (KeyValuePair<EnemyID,int> keyValuePairs in dictionaryInitEnemy)
+        {
+            totalInit += keyValuePairs.Value;
+        }
+        foreach (KeyValuePair<EnemyID, int> keyValuePairs in dictionaryKilledEnemy)
+        {
+            totalDeath += keyValuePairs.Value;
+        }
+
+
+        if (totalDeath >= totalInit && PlayerState != PlayerState.PlayerDefeated)
+        {
+            IsDefeated = false;
+            PlayerState = PlayerState.PlayerVictory;
+            ViewManager.Instance.SetActiveView(ViewType.EndgameView);
+            ViewManager.Instance.EndgameView.UpdateKilledEnemy(dictionaryInitEnemy, dictionaryKilledEnemy);
+            int currenlevel = PlayerPrefs.GetInt(PlayerPrefsKey.LEVEL_KEY);
+            PlayerPrefs.SetInt(PlayerPrefsKey.LEVEL_KEY, currenlevel + 1);
+            Debug.Log(PlayerPrefs.GetInt(PlayerPrefsKey.LEVEL_KEY));
         }
     }
 }

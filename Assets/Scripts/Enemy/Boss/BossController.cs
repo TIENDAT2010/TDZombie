@@ -4,8 +4,18 @@ using UnityEngine;
 
 public class BossController : EnemyController
 {
-    [SerializeField] private float m_Health = 0f;
     private bool isDead = false;
+    private bool isFire = false;
+
+
+    private void Update()
+    {
+        if (enemyHealth <= 0 && isDead == false)
+        {
+            isDead = true;
+            OnNextState(EnemyState.Dead_State);
+        }
+    }
 
 
     public override void OnInit(WaypointController waypointController)
@@ -66,7 +76,7 @@ public class BossController : EnemyController
 
 
 
-    public override void OnReceiveDamage(float damage, Vector2 attackDir)
+    public override void OnReceiveNormalDamage(float damage, Vector2 attackDir)
     {
         //Tao hieu ung blood
         EffectController bossBloodEffect = PoolManager.Instance.GetEffectController(EffectType.Boss_Blood_Effect);
@@ -75,15 +85,42 @@ public class BossController : EnemyController
 
 
         //Xu ly hp
-        m_Health = m_Health - damage;
-        if (m_Health <= 0 && isDead == false)
+        enemyHealth = enemyHealth - damage;
+    }
+
+
+    private IEnumerator HandleFireEffect(float damagePerSecond, EffectController fireEffect, float timeDamageFire)
+    {
+        while (timeDamageFire > 0 && enemyHealth > 0)
         {
-            isDead = true;
-            OnNextState(EnemyState.Dead_State);
+            yield return new WaitForSeconds(1f);
+            enemyHealth -= damagePerSecond;
+            timeDamageFire = timeDamageFire - 1f;
+        }
+        fireEffect.transform.SetParent(null);
+        fireEffect.gameObject.SetActive(false);
+        isFire = false;
+        SetColor(normalColor);
+    }
+
+
+    public override void OnReceiveFireDamage(float firstDamage, float damagePerSecond, float timeDamageFire)
+    {
+        enemyHealth -= firstDamage;
+        if (isFire == false)
+        {
+            SetColor(fireColor);
+            isFire = true;
+            EffectController fireEffect = PoolManager.Instance.GetEffectController(EffectType.Enemy_Burn_Effect);
+            fireEffect.transform.SetParent(transform);
+            fireEffect.transform.localPosition = Vector2.zero;
+            fireEffect.OnInit(transform.up, false);
+            StartCoroutine(HandleFireEffect(damagePerSecond, fireEffect, timeDamageFire));
         }
     }
-    
-    
+
+
+
     public override bool IsInRangeChase()
     {
         float distance = Vector2.Distance(PlayerController.transform.position, transform.position);

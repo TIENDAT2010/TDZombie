@@ -8,8 +8,11 @@ public class WeaponItemController : MonoBehaviour
     [SerializeField] WeaponType weaponType = WeaponType.Bat;
     [SerializeField] Image image = null;
     [SerializeField] Sprite[] sprites = null;
+    [SerializeField] int priceUnlock = 0; 
 
     public WeaponType WeaponType => weaponType;
+
+    public int PriceUnlock => priceUnlock;
 
     public void OnInit()
     {

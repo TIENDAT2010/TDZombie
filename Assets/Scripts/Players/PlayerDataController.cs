@@ -12,14 +12,32 @@ public class PlayerDataController
         if(!PlayerPrefs.HasKey(PLAYER_DATA))
         {
             PlayerData playerData = new PlayerData();
-            playerData.CurrentWeapon = WeaponType.FlameThrower;
-            playerData.CurrentCash = 0;
-            playerData.listUnlockWeapon = new List<WeaponType> { WeaponType.FlameThrower };
+            playerData.CurrentWeapon = WeaponType.Bat;
+            playerData.CurrentCash = 2000000;
+            playerData.listUnlockWeapon = new List<WeaponType> { WeaponType.Bat };
             string dataplayer = JsonUtility.ToJson(playerData);
             PlayerPrefs.SetString(PLAYER_DATA, dataplayer);
+            PlayerPrefs.SetInt(PlayerPrefsKey.LEVEL_KEY, 1);
         }
     }
 
+
+    public static LevelConfigSO GetLevelConfig()
+    {
+        int CurrentLevel = PlayerPrefs.GetInt(PlayerPrefsKey.LEVEL_KEY, 1);
+        LevelConfigSO levelConfig = Resources.Load("Levels/" + CurrentLevel.ToString(), typeof(LevelConfigSO)) as LevelConfigSO;
+        Debug.Log(CurrentLevel);
+        Debug.Log(levelConfig.MapID);
+        return levelConfig;
+    }
+
+
+    public static int GetCurrentCash()
+    {
+        string data = PlayerPrefs.GetString(PLAYER_DATA);
+        PlayerData playerData = JsonUtility.FromJson<PlayerData>(data);
+        return playerData.CurrentCash;
+    }
 
     public static void UpdateCash(int cash)
     {

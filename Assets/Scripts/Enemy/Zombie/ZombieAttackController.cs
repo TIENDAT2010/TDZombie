@@ -84,8 +84,11 @@ public class ZombieAttackController : EnemyAttackController
                     {
                         enemyController.PlayerController.OnReceiveNormalAttack(selectedAttack.firstDamage, transform.up);
                     }
+                    if(i == 2)
+                    {
+                        enemyController.PlaySoundEffect(selectedAttack.audioClip);
+                    }
                 }
-                else if(i == 2) { enemyController.PlaySoundEffect(selectedAttack.audioClip); }
                 yield return new WaitForSeconds(0.1f);
             }
             enemyController.SpriteRenderer.sprite = selectedAttack.animSprites[0];

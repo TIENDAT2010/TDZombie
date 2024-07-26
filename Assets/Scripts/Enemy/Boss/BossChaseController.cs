@@ -5,7 +5,6 @@ using UnityEngine.AI;
 
 public class BossChaseController : EnemyChaseController
 {
-    [SerializeField] private float chaseSpeed = 15f;
 
     public override void EnterEnemyChase()
     {
@@ -46,7 +45,7 @@ public class BossChaseController : EnemyChaseController
                     transform.up = Vector2.Lerp(transform.up, targetDir, 20 * Time.deltaTime);
 
                     Vector2 currentPos = transform.position;
-                    currentPos += (Vector2)transform.up * chaseSpeed * Time.deltaTime;
+                    currentPos += (Vector2)transform.up * enemyController.ChaseSpeed * Time.deltaTime;
                     transform.position = currentPos;
 
                 }

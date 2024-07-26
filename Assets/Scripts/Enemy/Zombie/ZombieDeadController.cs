@@ -27,8 +27,8 @@ public class ZombieDeadController : EnemyDeadController
             yield return new WaitForSeconds(0.15f);
         }
 
+        enemyController.PlayerController.UpdateDeadEnemy(enemyController.EnemyID);
         yield return new WaitForSeconds(5f);
-
         gameObject.SetActive(false);
     }
 }

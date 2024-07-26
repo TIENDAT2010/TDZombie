@@ -35,7 +35,7 @@ public class ZombieIdleController : EnemyIdleController
     {
         while(IsEnterState)
         {          
-            if(enemyController.IsInRangeChase())
+            if(enemyController.IsInRangeChase() && enemyController.PlayerController.PlayerState == PlayerState.PlayerStart)
             {
                 enemyController.OnNextState(EnemyState.Chase_State);
                 yield break;

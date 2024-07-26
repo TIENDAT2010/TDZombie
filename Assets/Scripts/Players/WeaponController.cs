@@ -5,141 +5,40 @@ using UnityEngine;
 
 public class WeaponController : MonoBehaviour
 {
-    [SerializeField] private LayerMask enemyLayerMask = new LayerMask();
-    [SerializeField] private WeaponType weaponType;
-    [SerializeField] SpriteRenderer spriteRenderer;
-    [SerializeField] AudioSource audioSource = null;
-    [SerializeField] AudioClip weaponAudio = null;
-    [SerializeField] Transform bulletSpawnPos = null;
-    [SerializeField] Sprite[] animationSprite;
+    [SerializeField] protected LayerMask enemyLayerMask = new LayerMask();
+    [SerializeField] protected WeaponType weaponType;
+    [SerializeField] protected SpriteRenderer spriteRenderer;
+    [SerializeField] protected AudioSource audioSource = null;
+    [SerializeField] protected AudioClip weaponAudio = null;
+    [SerializeField] protected Transform bulletSpawnPos = null;
+    [SerializeField] protected Sprite[] animationSprite;
+    [SerializeField] protected Material normalMaterial = null;
+    [SerializeField] protected Material whiteMaterial = null;
 
-    private int damageBullet = 5;
+    protected bool IsFinishAttack = true;
 
-    public bool IsFinishAttack { get; private set; }
+    public WeaponType WeaponType => weaponType;
 
-    private void Awake()
-    {
-        IsFinishAttack = true;
-    }
+    public virtual void OnEnterAttack(){}
 
+    public virtual void OnExitAttack(){}
 
-    public virtual void OnEnterAttack()
-    {
-
-    }
-
-
-    public virtual void OnExitAttack()
-    {
-
-    }
-
-
-    public virtual void OnAttack()
-    {
-
-    }
+    public virtual void OnAttack(){}
 
     public virtual void SetColor(Color color)
     {
         spriteRenderer.color = color;
     }
 
-
-    public void PlayAttack()
+    public virtual void SetMaterial()
     {
-        IsFinishAttack = false;
-        StartCoroutine(CRPlayAnimation());
-        if (weaponType == WeaponType.Riffle)
-        {
-            StartCoroutine(RiffleAttack());
-        }
-        if (weaponType == WeaponType.HandGun)
-        {
-            StartCoroutine(HandGunAttack());
-        }
-        if (weaponType == WeaponType.Bat)
-        {
-            StartCoroutine(BatAttack());
-        }
-        if (weaponType == WeaponType.Knife)
-        {
-            StartCoroutine(KnifeAttack());
-        }
-    }
+        StartCoroutine(ChangeMaterial());
+    }    
 
-    private IEnumerator CRPlayAnimation()
+    private IEnumerator ChangeMaterial()
     {
-        for (int i = 0; i < animationSprite.Length; i++)
-        {
-            spriteRenderer.sprite = animationSprite[i];
-            yield return new WaitForSeconds(0.05f);
-        }
-        spriteRenderer.sprite = animationSprite[0];
+        spriteRenderer.material = whiteMaterial;
+        yield return new WaitForSeconds(0.05f);
+        spriteRenderer.material = normalMaterial;
     }
-
-
-    /// <summary>
-    /// Xu ly Riffle Attack
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator RiffleAttack()
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            BulletController bulletspawn = PoolManager.Instance.GetBulletController();
-            bulletspawn.transform.position = bulletSpawnPos.transform.position;
-            bulletspawn.transform.up = transform.up;
-            bulletspawn.OnInit(damageBullet);
-            yield return new WaitForSeconds(0.15f);
-            audioSource.PlayOneShot(weaponAudio);
-        }
-        IsFinishAttack = true;
-    }
-
-    private IEnumerator HandGunAttack()
-    {
-        BulletController bulletspawn = PoolManager.Instance.GetBulletController();
-        bulletspawn.transform.position = bulletSpawnPos.transform.position;
-        bulletspawn.transform.up = transform.up;
-        bulletspawn.OnInit(damageBullet);
-        audioSource.PlayOneShot(weaponAudio);
-        yield return new WaitForSeconds(0.5f);
-        IsFinishAttack = true;
-    }
-
-
-    private IEnumerator BatAttack()
-    {
-        //Kiem tra va cham voi Enemy
-        Collider2D enemyCollider2D = Physics2D.OverlapCircle(transform.position + (transform.up * 3f), 2f, enemyLayerMask);
-        if (enemyCollider2D != null)
-        {
-            //Enemy take damage
-            EnemyController enemy = enemyCollider2D.gameObject.GetComponent<EnemyController>();
-            enemy.OnReceiveDamage(10f, transform.up);
-        }
-        audioSource.PlayOneShot(weaponAudio);
-        yield return new WaitForSeconds(0.7f);
-        IsFinishAttack = true;
-    }
-
-
-    private IEnumerator KnifeAttack()
-    {
-        //Kiem tra va cham voi Enemy
-        Collider2D enemyCollider2D = Physics2D.OverlapCircle(transform.position + (transform.up * 2f), 2f, enemyLayerMask);
-        if (enemyCollider2D != null)
-        {
-            //Enemy take damage
-            EnemyController enemy = enemyCollider2D.gameObject.GetComponent<EnemyController>();
-            enemy.OnReceiveDamage(10f, transform.up);
-        }
-        audioSource.PlayOneShot(weaponAudio);
-        yield return new WaitForSeconds(0.5f);
-        IsFinishAttack = true;
-    }
-
-
-
 }

@@ -20,8 +20,8 @@ public class HomeView : BaseView
 
     public void OnClickStartGameButton()
     {
-        SceneManager.LoadScene("Map_1");
-        OnHide();
+        LevelConfigSO levelConfig = PlayerDataController.GetLevelConfig();
+        SceneManager.LoadScene(levelConfig.MapID);
     }
 
     public void OnClickWeaponButton()

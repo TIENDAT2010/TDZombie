@@ -72,7 +72,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5000
+  m_SortingOrder: 4996
   m_Sprite: {fileID: 21300000, guid: 8fca0e30bc2afdc408a8f27d0b397da0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -302,7 +302,7 @@ MonoBehaviour:
     damageAffectTime: 5
     WarningSprite: {fileID: 0}
     attackPos: {fileID: 0}
-    audioClip: {fileID: 8300000, guid: 1225b0f997026d64fa600c3fd93f1a74, type: 3}
+    audioClip: {fileID: 8300000, guid: ea851e3172672ce419d5a194110f363b, type: 3}
     animSprites:
     - {fileID: 21300000, guid: 6de37eaf4c5a8ba47a10743257119c2d, type: 3}
     - {fileID: 21300000, guid: fdf5c8e852ef1f545b589c62869349e2, type: 3}
@@ -320,7 +320,7 @@ MonoBehaviour:
     damageAffectTime: 5
     WarningSprite: {fileID: 0}
     attackPos: {fileID: 0}
-    audioClip: {fileID: 8300000, guid: 5cd921b91deac4f47b05c451951f7a53, type: 3}
+    audioClip: {fileID: 8300000, guid: a4366158371c9514cae30cfff454dcb2, type: 3}
     animSprites:
     - {fileID: 21300000, guid: f6852be42998c1244b71a9a6a0d2289d, type: 3}
     - {fileID: 21300000, guid: f40df33b73c565e43b29d42005cf23b9, type: 3}
@@ -392,7 +392,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c35c3af8a6befa34296d15dfd0ed551e, type: 3}
   - {fileID: 21300000, guid: 86f2ac5e8fb4f7449a53b29223d377d8, type: 3}
   - {fileID: 21300000, guid: 2cc3602182bc7a041b208c5cc2954058, type: 3}
-  speedWalk: 10
 --- !u!114 &4719005292267124789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -416,7 +415,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c35c3af8a6befa34296d15dfd0ed551e, type: 3}
   - {fileID: 21300000, guid: 86f2ac5e8fb4f7449a53b29223d377d8, type: 3}
   - {fileID: 21300000, guid: 2cc3602182bc7a041b208c5cc2954058, type: 3}
-  speedChase: 15
 --- !u!114 &6774785027809159627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -429,6 +427,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94568d6583918e64d8a2a1675e09aeae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyHealth: 70
+  moveSpeed: 10
+  chaseSpeed: 15
   enemyID: 6
   idleController: {fileID: 7251839895642641728}
   walkController: {fileID: 3282316031196416189}
@@ -439,4 +440,6 @@ MonoBehaviour:
   spriteRenderer: {fileID: 5487438321740562226}
   audioSource: {fileID: 8387747886339659204}
   col2D: {fileID: 8303515615669657397}
-  health: 50
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  fireColor: {r: 1, g: 0.56078434, b: 0.47058824, a: 1}
+  zombieHealth: 0

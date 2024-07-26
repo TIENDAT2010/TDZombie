@@ -11,6 +11,15 @@ public enum GameState
     LevelCompleted = 4,
 }
 
+
+public enum PlayerState
+{
+    PlayerStart = 0,
+    PlayerVictory = 1,
+    PlayerDefeated = 2,
+}
+
+
 public enum ViewType
 {
     HomeView = 0,

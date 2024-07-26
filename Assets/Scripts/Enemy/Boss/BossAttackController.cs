@@ -163,7 +163,6 @@ public class BossAttackController : EnemyAttackController
             enemyController.SpriteRenderer.sprite = selectedAttack.animSprites[0];
             yield return new WaitForSeconds(0.5f);
             selectedAttack = null;
-            Debug.Log("aaaa");
 
             enemyController.OnNextState(EnemyState.Walk_State);
         }

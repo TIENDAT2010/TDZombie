@@ -8,16 +8,18 @@ public class PoolManager : MonoBehaviour
 {
     public static PoolManager Instance { get; private set; }
 
-    [SerializeField] private BulletController bulletPrefab;
-    [SerializeField] private BulletEffectController bulletEffectPrefab;
-    [SerializeField] private BossBodyController bossBodyPrefab;
-    [SerializeField] private EnemyController[] enemyPrefabs;
-    [SerializeField] private EffectController[] bloodEffectPrefabs = null;
-
+    [SerializeField] private PlayerController playerPrefab = null;
+    [SerializeField] private BulletController bulletPrefab = null;
+    [SerializeField] private BulletEffectController bulletEffectPrefab = null;
+    [SerializeField] private BossBodyController bossBodyPrefab = null;
+    [SerializeField] private EnemyController[] enemyPrefabs = null;
+    [SerializeField] private EnemyItemController[] enemyItemPrefabs = null;
+    [SerializeField] private EffectController[] effectPrefabs = null;
 
     private List<BulletController> listBullet = new List<BulletController>();
     private List<EnemyController> listEnemy = new List<EnemyController>();
     private List<EffectController> listBloodEffect = new List<EffectController>();
+    private List<EnemyItemController> listEnemyItem = new List<EnemyItemController>();
     private List<BossBodyController> listBossBody = new List<BossBodyController>();
     private List<BulletEffectController> listBulletEffect = new List<BulletEffectController>();
 
@@ -33,6 +35,14 @@ public class PoolManager : MonoBehaviour
         {
             Instance = this;
         }
+    }
+
+
+    public PlayerController GetPlayerController()
+    {
+        PlayerController prefab = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+        prefab.gameObject.SetActive(true);
+        return prefab;
     }
 
 
@@ -79,6 +89,19 @@ public class PoolManager : MonoBehaviour
     }
 
 
+    public EnemyItemController GetEnemyItemController(EnemyID enemyID)
+    {
+        EnemyItemController enemyItem = listEnemyItem.Where(a => a.EnemyID.Equals(enemyID) && !a.gameObject.activeSelf).FirstOrDefault();
+        if (enemyItem == null)
+        {
+            EnemyItemController prefab = enemyItemPrefabs.Where(a => a.EnemyID.Equals(enemyID)).FirstOrDefault();
+            enemyItem = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+            listEnemyItem.Add(enemyItem);
+        }
+        enemyItem.gameObject.SetActive(true);
+        return enemyItem;
+    }
+
 
 
     public EffectController GetEffectController(EffectType effectType)
@@ -86,7 +109,7 @@ public class PoolManager : MonoBehaviour
         EffectController resultEffect = listBloodEffect.Where(a => a.EffectType.Equals(effectType) && !a.gameObject.activeSelf).FirstOrDefault();
         if (resultEffect == null)
         {
-            EffectController prefab = bloodEffectPrefabs.Where(a => a.EffectType.Equals(effectType)).FirstOrDefault(); ;
+            EffectController prefab = effectPrefabs.Where(a => a.EffectType.Equals(effectType)).FirstOrDefault(); ;
             resultEffect = Instantiate(prefab, Vector3.zero, Quaternion.identity);
             listBloodEffect.Add(resultEffect);
         }

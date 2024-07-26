@@ -5,7 +5,6 @@ using UnityEngine.AI;
 
 public class ZombieWalkController : EnemyWalkController
 {
-    [SerializeField] private float speedWalk = 0f;
     Vector2 targetPos = Vector2.zero;
 
     public override void EnterEnemyWalk()
@@ -28,7 +27,7 @@ public class ZombieWalkController : EnemyWalkController
         if (IsEnterState)
         {
             //kiem tra va chuyen sang trang thai chase
-            if(enemyController.IsInRangeChase())
+            if(enemyController.IsInRangeChase() && enemyController.PlayerController.PlayerState == PlayerState.PlayerStart)
             {
                 enemyController.OnNextState(EnemyState.Chase_State);
             }
@@ -46,7 +45,7 @@ public class ZombieWalkController : EnemyWalkController
                         transform.up = Vector2.Lerp(transform.up, targetDir, 20 * Time.deltaTime);
 
                         Vector2 currentPos = transform.position;
-                        currentPos += (Vector2)transform.up * speedWalk * Time.deltaTime;
+                        currentPos += (Vector2)transform.up * enemyController.MoveSpeed * Time.deltaTime;
                         transform.position = currentPos;
 
                     }

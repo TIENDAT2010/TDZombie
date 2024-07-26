@@ -72,9 +72,9 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5000
+  m_SortingOrder: 4998
   m_Sprite: {fileID: 21300000, guid: d5b7a2b1cc33d8d41a9040360884e91c, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.990566, g: 0.990566, b: 0.990566, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -476,7 +476,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e280e3f203b37f444b572fca0f5eb579, type: 3}
   - {fileID: 21300000, guid: 910828ee6b3d2944191fe78f54423a7b, type: 3}
   - {fileID: 21300000, guid: cd19c5d156795c04686c9a62615694d6, type: 3}
-  chaseSpeed: 15
 --- !u!114 &4557698629698014389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -539,7 +538,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e280e3f203b37f444b572fca0f5eb579, type: 3}
   - {fileID: 21300000, guid: 910828ee6b3d2944191fe78f54423a7b, type: 3}
   - {fileID: 21300000, guid: cd19c5d156795c04686c9a62615694d6, type: 3}
-  m_MoveSpeed: 10
 --- !u!114 &3454010545191015621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -552,6 +550,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d1122f425820c64581cb12f42dd921a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyHealth: 100
+  moveSpeed: 10
+  chaseSpeed: 15
   enemyID: 8
   idleController: {fileID: 1438206285961851620}
   walkController: {fileID: 7547822137538231267}
@@ -562,4 +563,6 @@ MonoBehaviour:
   spriteRenderer: {fileID: 5487438321740562226}
   audioSource: {fileID: 1641926503945991349}
   col2D: {fileID: 5889302828979071951}
-  m_Health: 90
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  fireColor: {r: 1, g: 0.56078434, b: 0.47058824, a: 1}
+  bossHealth: 0

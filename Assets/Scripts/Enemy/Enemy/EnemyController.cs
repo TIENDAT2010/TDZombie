@@ -5,6 +5,10 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
+    [Header("Enemy Configs")]
+    [SerializeField] protected float enemyHealth = 10;
+    [SerializeField] protected int moveSpeed = 10;
+    [SerializeField] protected int chaseSpeed = 15;
 
     [Header("Enemy References")]
     [SerializeField] protected EnemyID enemyID = EnemyID.Zombie_1;
@@ -17,8 +21,14 @@ public class EnemyController : MonoBehaviour
     [SerializeField] protected SpriteRenderer spriteRenderer = null;
     [SerializeField] protected AudioSource audioSource = null;
     [SerializeField] protected Collider2D col2D = null;
+    [SerializeField] protected Color normalColor = Color.white;
+    [SerializeField] protected Color fireColor = Color.red;
 
     public EnemyID EnemyID => enemyID;
+
+    public float EnemyHealth => enemyHealth;
+    public int MoveSpeed => moveSpeed;
+    public int ChaseSpeed => chaseSpeed;
 
 
     public Collider2D Colider => col2D;
@@ -33,7 +43,9 @@ public class EnemyController : MonoBehaviour
     public virtual void OnNextState(EnemyState nextState) { }
     
 
-    public virtual void OnReceiveDamage(float damage, Vector2 attackDir) { }
+    public virtual void OnReceiveNormalDamage(float damage, Vector2 attackDir) { }
+
+    public virtual void OnReceiveFireDamage(float firstDamage, float damagePerSecond, float timeDamageFire) { }
 
 
     public virtual bool IsInRangeChase()
@@ -51,6 +63,11 @@ public class EnemyController : MonoBehaviour
         return false ;
     }
 
+
+    public virtual void SetColor(Color color)
+    {
+        spriteRenderer.color = color;
+    }
 
 
     public virtual void PlaySoundEffect(AudioClip audioClip)

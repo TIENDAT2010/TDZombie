@@ -7,6 +7,8 @@ public class WaypointController : MonoBehaviour
     [SerializeField] private EnemyID enemyID = EnemyID.Zombie_1;
     [SerializeField] Transform[] waypoints = null;
 
+    public EnemyID EnemyID => enemyID;
+
     private bool isForward = true;
     private int waypointIndex = 0;
 

@@ -5,7 +5,6 @@ using UnityEngine.AI;
 
 public class BossWalkController : EnemyWalkController
 {
-    [SerializeField] private float m_MoveSpeed = 0f;
     Vector2 targetPos = Vector2.zero;
 
 
@@ -47,7 +46,7 @@ public class BossWalkController : EnemyWalkController
                         transform.up = Vector2.Lerp(transform.up, targetDir, 20 * Time.deltaTime);
 
                         Vector2 currentPos = transform.position;
-                        currentPos += (Vector2)transform.up * m_MoveSpeed * Time.deltaTime;
+                        currentPos += (Vector2)transform.up * enemyController.MoveSpeed * Time.deltaTime;
                         transform.position = currentPos;
 
                     }

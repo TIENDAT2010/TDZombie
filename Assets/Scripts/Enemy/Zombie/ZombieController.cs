@@ -4,8 +4,18 @@ using UnityEngine;
 
 public class ZombieController : EnemyController
 {
-    [SerializeField] private float health = 0f;
     private bool isDead = false;
+    private bool isFire = false;
+
+
+    private void Update()
+    {
+        if (enemyHealth <= 0 && isDead == false)
+        {
+            isDead = true;
+            OnNextState(EnemyState.Dead_State);
+        }
+    }
 
 
     public override void OnInit(WaypointController waypointController)
@@ -19,7 +29,7 @@ public class ZombieController : EnemyController
     }
 
 
-    public override void OnReceiveDamage(float damage, Vector2 attackDir)
+    public override void OnReceiveNormalDamage(float damage, Vector2 attackDir)
     {
         //Tao blood effect
         EffectController zombieBloodEffect = PoolManager.Instance.GetEffectController(EffectType.Zombie_Blood_Effect);
@@ -27,14 +37,39 @@ public class ZombieController : EnemyController
         zombieBloodEffect.OnInit(attackDir, true);
 
         ///Xu ly hp
-        health = health - damage;
-        if (health <= 0 && isDead == false)
-        {
-            isDead = true;
-            OnNextState(EnemyState.Dead_State);
-        }
+        enemyHealth = enemyHealth - damage;
     }
 
+
+    private IEnumerator HandleFireEffect(float damagePerSecond, EffectController fireEffect, float timeDamageFire)
+    {
+        while (timeDamageFire > 0 && enemyHealth > 0) 
+        {
+            yield return new WaitForSeconds(1f);
+            enemyHealth -= damagePerSecond;
+            timeDamageFire = timeDamageFire - 1f;
+        }
+        fireEffect.transform.SetParent(null);
+        fireEffect.gameObject.SetActive(false);
+        isFire = false;
+        SetColor(normalColor);
+    }
+
+
+    public override void OnReceiveFireDamage(float firstDamage, float damagePerSecond, float timeDamageFire)
+    {
+        enemyHealth -= firstDamage;
+        if(isFire == false)
+        {
+            SetColor(fireColor);
+            isFire = true;
+            EffectController fireEffect = PoolManager.Instance.GetEffectController(EffectType.Enemy_Burn_Effect);
+            fireEffect.transform.SetParent(transform);
+            fireEffect.transform.localPosition = Vector2.zero;
+            fireEffect.OnInit(transform.up, false);
+            StartCoroutine(HandleFireEffect(damagePerSecond, fireEffect, timeDamageFire));
+        }
+    }
 
 
     public override bool IsInRangeChase()
